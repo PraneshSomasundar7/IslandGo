@@ -37,7 +37,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold text-slate-900 hover:text-[#FF6B35] transition-colors duration-200"
+            className="text-xl font-bold text-slate-900 hover:text-[#FF6B35] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded"
             onClick={closeMobileMenu}
           >
             IslandGo AI
@@ -49,7 +49,7 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded ${
                   pathname === link.href
                     ? "text-[#FF6B35] border-b-2 border-[#FF6B35]"
                     : "text-slate-700 hover:text-slate-900"
@@ -63,7 +63,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 text-slate-700 hover:text-slate-900 transition-colors duration-200"
+            className="md:hidden p-2 text-slate-700 hover:text-slate-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded"
             aria-label="Toggle menu"
             type="button"
           >
@@ -84,7 +84,7 @@ export default function Navigation() {
                   key={link.href}
                   href={link.href}
                   onClick={closeMobileMenu}
-                  className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 ${
+                  className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 ${
                     pathname === link.href
                       ? "bg-[#FF6B35]/20 text-[#FF6B35]"
                       : "text-slate-700 hover:bg-amber-50 hover:text-slate-900"

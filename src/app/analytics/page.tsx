@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, TrendingUp, TrendingDown, Download, RefreshCw, BarChart3, PieChart, LineChart } from "lucide-react";
 import {
   LineChart as RechartsLineChart,
-  BarChart,
+  BarChart as RechartsBarChart,
   PieChart as RechartsPieChart,
   Line,
   Bar,
@@ -19,6 +19,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { getActivities, Activity } from "@/lib/activity";
+import { ChartSkeleton, StatCardSkeleton } from "@/components/LoadingSkeleton";
 
 // Type definitions
 type DateRange = "7" | "30" | "90";
@@ -382,7 +383,7 @@ export default function AnalyticsPage() {
               </div>
               <button
                 onClick={refreshData}
-                className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors duration-200 flex items-center gap-2"
+                className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span className="text-sm">Refresh</span>
@@ -401,7 +402,7 @@ export default function AnalyticsPage() {
                   <button
                     key={range}
                     onClick={() => setDateRange(range)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#00D4FF] focus:ring-offset-2 ${
                       dateRange === range
                         ? "bg-[#00D4FF] text-white shadow-md"
                         : "bg-white border border-amber-200 text-slate-700 hover:bg-amber-50"
@@ -414,7 +415,7 @@ export default function AnalyticsPage() {
             </div>
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 px-4 py-2 bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+              className="flex items-center gap-2 px-4 py-2 bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4ECB71] focus:ring-offset-2"
             >
               <Download className="w-4 h-4" />
               <span>Export Report</span>
@@ -423,6 +424,13 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Stat Cards */}
+        <Suspense fallback={
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </div>
+        }>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
@@ -449,6 +457,7 @@ export default function AnalyticsPage() {
             <div className="text-xs text-slate-500">Generated</div>
           </div>
         </div>
+        </Suspense>
 
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -458,45 +467,47 @@ export default function AnalyticsPage() {
               <LineChart className="w-5 h-5 text-[#00D4FF]" />
               Growth Over Time
             </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <RechartsLineChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "white",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="creators"
-                  stroke="#FF6B35"
-                  strokeWidth={2}
-                  name="Creators"
-                  dot={{ r: 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="campaigns"
-                  stroke="#4ECB71"
-                  strokeWidth={2}
-                  name="Campaigns"
-                  dot={{ r: 4 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="viral"
-                  stroke="#00D4FF"
-                  strokeWidth={2}
-                  name="Viral Content"
-                  dot={{ r: 4 }}
-                />
-              </RechartsLineChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<ChartSkeleton />}>
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsLineChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" stroke="#64748b" />
+                  <YAxis stroke="#64748b" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="creators"
+                    stroke="#FF6B35"
+                    strokeWidth={2}
+                    name="Creators"
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="campaigns"
+                    stroke="#4ECB71"
+                    strokeWidth={2}
+                    name="Campaigns"
+                    dot={{ r: 4 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="viral"
+                    stroke="#00D4FF"
+                    strokeWidth={2}
+                    name="Viral Content"
+                    dot={{ r: 4 }}
+                  />
+                </RechartsLineChart>
+              </ResponsiveContainer>
+            </Suspense>
           </div>
 
           {/* Bar Chart - Cities Comparison */}
@@ -505,23 +516,25 @@ export default function AnalyticsPage() {
               <BarChart3 className="w-5 h-5 text-[#4ECB71]" />
               Cities Comparison
             </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={cityData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="city" stroke="#64748b" />
-                <YAxis stroke="#64748b" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "white",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="creators" fill="#FF6B35" name="Creators" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="campaigns" fill="#4ECB71" name="Campaigns" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<ChartSkeleton />}>
+              <ResponsiveContainer width="100%" height={300}>
+                <RechartsBarChart data={cityData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="city" stroke="#64748b" />
+                  <YAxis stroke="#64748b" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="creators" fill="#FF6B35" name="Creators" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="campaigns" fill="#4ECB71" name="Campaigns" radius={[8, 8, 0, 0]} />
+                </RechartsBarChart>
+              </ResponsiveContainer>
+            </Suspense>
           </div>
         </div>
 
@@ -531,31 +544,33 @@ export default function AnalyticsPage() {
             <PieChart className="w-5 h-5 text-[#FF6B35]" />
             Content Categories Distribution
           </h3>
-          <ResponsiveContainer width="100%" height={350}>
-            <RechartsPieChart>
-              <Pie
-                data={categoryData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {categoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "white",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "8px",
-                }}
-              />
-            </RechartsPieChart>
-          </ResponsiveContainer>
+          <Suspense fallback={<ChartSkeleton />}>
+            <ResponsiveContainer width="100%" height={350}>
+              <RechartsPieChart>
+                <Pie
+                  data={categoryData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                  }}
+                />
+              </RechartsPieChart>
+            </ResponsiveContainer>
+          </Suspense>
         </div>
       </div>
     </div>

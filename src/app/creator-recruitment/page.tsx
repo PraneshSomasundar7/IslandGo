@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, Users, Instagram, TrendingUp, Loader2, AlertCircle, RefreshCw, X, CheckCircle2 } from "lucide-react";
 import { addActivity } from "@/lib/activity";
+import { TableSkeleton } from "@/components/LoadingSkeleton";
 
 interface Creator {
   id?: number;
@@ -246,12 +247,12 @@ export default function CreatorRecruitmentPage() {
               onKeyDown={(e) => e.key === "Enter" && !loading && city.trim() && handleSearch()}
               placeholder="Enter city name (e.g., Austin, TX)"
               disabled={loading}
-              className="flex-1 px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-[#FF6B35]/50"
             />
             <button
               onClick={handleSearch}
               disabled={loading || !city.trim()}
-              className="px-6 py-3 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 min-w-[140px] hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+              className="px-6 py-3 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 min-w-[140px] hover:scale-105 active:scale-95 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2"
             >
               {loading ? (
                 <>
@@ -267,10 +268,12 @@ export default function CreatorRecruitmentPage() {
 
         {/* Loading State */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-12 sm:py-20">
-            <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-[#FF6B35] animate-spin mb-4" />
-            <p className="text-slate-700 text-sm sm:text-base">{loadingMessage}</p>
-          </div>
+          <Suspense fallback={<TableSkeleton />}>
+            <div className="flex flex-col items-center justify-center py-12 sm:py-20">
+              <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-[#FF6B35] animate-spin mb-4" />
+              <p className="text-slate-700 text-sm sm:text-base">{loadingMessage}</p>
+            </div>
+          </Suspense>
         )}
 
         {/* Error State */}
