@@ -1,105 +1,300 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Download, Share2, Twitter, Facebook, Instagram, TrendingUp } from "lucide-react";
+import { ArrowLeft, Sparkles, Download, Share2, Twitter, Facebook, Instagram, TrendingUp, Loader2, AlertCircle, RefreshCw, CheckCircle2, X, Eye } from "lucide-react";
+import html2canvas from "html2canvas";
+import { addActivity } from "@/lib/activity";
 
+// Type definitions
 interface AchievementBadge {
   name: string;
   emoji: string;
   color: string;
 }
 
+interface ViralContentResponse {
+  caption: string;
+  badges: AchievementBadge[];
+}
+
+interface ApiResponse {
+  caption?: string;
+  badges?: AchievementBadge[];
+  error?: string;
+  message?: string;
+}
+
+interface Toast {
+  id: string;
+  message: string;
+  type: "success" | "error" | "info";
+}
+
 type CuisineType = "Mexican" | "Asian" | "Italian" | "American" | "Fusion";
 
 const cuisines: CuisineType[] = ["Mexican", "Asian", "Italian", "American", "Fusion"];
 
-const achievementBadges: AchievementBadge[] = [
-  { name: "Ramen Hunter", emoji: "🍜", color: "from-orange-400 to-red-500" },
-  { name: "Taco Enthusiast", emoji: "🌮", color: "from-yellow-400 to-orange-500" },
-  { name: "Pasta Master", emoji: "🍝", color: "from-blue-400 to-purple-500" },
-  { name: "Sushi Explorer", emoji: "🍣", color: "from-green-400 to-teal-500" },
-  { name: "Burger Connoisseur", emoji: "🍔", color: "from-red-400 to-pink-500" },
-  { name: "Pizza Lover", emoji: "🍕", color: "from-yellow-400 to-orange-500" },
-  { name: "BBQ Champion", emoji: "🥩", color: "from-orange-500 to-red-600" },
-  { name: "Dessert Explorer", emoji: "🍰", color: "from-pink-400 to-purple-500" }
-];
+// Toast Component
+function Toast({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
-const generateCaption = (name: string, cities: string[], cuisine: string): string => {
+  return (
+    <div
+      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border backdrop-blur-md animate-in slide-in-from-bottom-4 ${
+        toast.type === "success"
+          ? "bg-green-50 border-green-200 text-green-800"
+          : toast.type === "error"
+          ? "bg-red-50 border-red-200 text-red-800"
+          : "bg-blue-50 border-blue-200 text-blue-800"
+      }`}
+    >
+      {toast.type === "success" ? (
+        <CheckCircle2 className="w-5 h-5 text-green-600" />
+      ) : toast.type === "error" ? (
+        <AlertCircle className="w-5 h-5 text-red-600" />
+      ) : (
+        <CheckCircle2 className="w-5 h-5 text-blue-600" />
+      )}
+      <p className="text-sm font-medium">{toast.message}</p>
+      <button onClick={onClose} className="ml-2 text-slate-500 hover:text-slate-700">
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+// Preview Modal Component
+function PreviewModal({
+  name,
+  cities,
+  cuisine,
+  onConfirm,
+  onCancel,
+}: {
+  name: string;
+  cities: string[];
+  cuisine: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   const cityCount = cities.length;
   const cityList = cities.length > 0 ? cities.join(", ") : "amazing places";
-  
-  return `🌍 Just unlocked my Food Explorer Passport! 🎉
 
-I've been on an incredible culinary journey through ${cityList}, and I'm officially a ${cuisine} enthusiast! 
-
-With ${cityCount} cities under my belt, I've discovered hidden gems, tried authentic flavors, and met incredible food communities along the way. 
-
-Every meal tells a story, and I'm here for all of them! 🍽️✨
-
-#FoodExplorer #${cuisine}Lover #FoodJourney #TravelEats #FoodieLife #${cities[0] || "Food"}Eats`;
-};
-
-const getRandomBadges = (count: number, cuisine: string): AchievementBadge[] => {
-  const cuisineMap: Record<string, string[]> = {
-    Mexican: ["Taco Enthusiast", "BBQ Champion"],
-    Asian: ["Ramen Hunter", "Sushi Explorer"],
-    Italian: ["Pasta Master", "Pizza Lover"],
-    American: ["Burger Connoisseur", "BBQ Champion"],
-    Fusion: ["Sushi Explorer", "Dessert Explorer"]
-  };
-  
-  const preferred = cuisineMap[cuisine] || [];
-  const available = achievementBadges.filter(b => 
-    preferred.some(p => b.name.includes(p.split(" ")[0])) || 
-    Math.random() > 0.5
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-amber-200">
+        <div className="flex items-center gap-2 mb-4">
+          <Eye className="w-5 h-5 text-[#00D4FF]" />
+          <h3 className="text-xl font-bold text-slate-900">Preview Your Passport</h3>
+        </div>
+        <div className="bg-gradient-to-br from-[#FF6B35] via-pink-500 to-[#00D4FF] rounded-lg p-4 mb-4 text-white">
+          <div className="text-center">
+            <div className="text-xs font-semibold mb-2">🎫 FOOD EXPLORER PASSPORT</div>
+            <div className="text-2xl font-bold mb-1">{name}</div>
+            <div className="text-sm">{cityCount} Cities Explored</div>
+          </div>
+        </div>
+        <div className="space-y-2 text-sm text-slate-700 mb-6">
+          <p><strong>Name:</strong> {name}</p>
+          <p><strong>Cities:</strong> {cityList}</p>
+          <p><strong>Cuisine:</strong> {cuisine}</p>
+          <p className="text-xs text-slate-500 mt-2">AI will generate unique badges and a viral caption based on your preferences.</p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={onConfirm}
+            className="flex-1 px-4 py-2 bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-white font-semibold rounded-lg transition-all duration-200"
+          >
+            Generate
+          </button>
+          <button
+            onClick={onCancel}
+            className="flex-1 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-900 font-semibold rounded-lg transition-all duration-200"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
   );
-  
-  return available.slice(0, count).map(badge => 
-    achievementBadges.find(b => b.name === badge.name) || badge
-  );
-};
+}
 
 export default function ViralContentPage() {
   const [name, setName] = useState("");
   const [cities, setCities] = useState("");
-  const [cuisine, setCuisine] = useState("Mexican");
+  const [cuisine, setCuisine] = useState<CuisineType>("Mexican");
   const [loading, setLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
   const [caption, setCaption] = useState<string>("");
   const [badges, setBadges] = useState<AchievementBadge[]>([]);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const passportRef = useRef<HTMLDivElement>(null);
+
+  const showToast = (message: string, type: "success" | "error" | "info") => {
+    const id = Math.random().toString(36).substring(7);
+    setToasts((prev) => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  const validateForm = (): boolean => {
+    if (!name.trim()) {
+      showToast("Please enter your name", "error");
+      return false;
+    }
+    const cityList = cities.split(",").map((c) => c.trim()).filter((c) => c);
+    if (cityList.length === 0) {
+      showToast("Please enter at least one city", "error");
+      return false;
+    }
+    return true;
+  };
 
   const handleGenerate = async (): Promise<void> => {
-    if (!name.trim()) return;
+    if (!validateForm()) return;
+
+    const cityList = cities.split(",").map((c) => c.trim()).filter((c) => c);
 
     setLoading(true);
     setGenerated(false);
+    setCaption("");
+    setBadges([]);
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "generate-viral",
+          data: {
+            userName: name.trim(),
+            cities: cityList,
+            cuisine: cuisine,
+          },
+        }),
+      });
 
-    const cityList = cities.split(",").map(c => c.trim()).filter(c => c);
-    const cityCount = cityList.length;
-    const badgeCount = Math.min(4, Math.max(3, Math.ceil(cityCount / 2)));
+      if (!response.ok) {
+        const errorData: ApiResponse = await response.json();
+        throw new Error(errorData.error || errorData.message || "Failed to generate content");
+      }
 
-    const generatedBadges = getRandomBadges(badgeCount, cuisine);
-    const generatedCaption = generateCaption(name, cityList, cuisine);
+      const data: ApiResponse = await response.json();
 
-    setBadges(generatedBadges);
-    setCaption(generatedCaption);
-    setGenerated(true);
-    setLoading(false);
+      if (data.caption && data.badges && Array.isArray(data.badges)) {
+        setCaption(data.caption);
+        setBadges(data.badges);
+        setGenerated(true);
+        showToast("Content generated successfully!", "success");
+        
+        // Log activity
+        addActivity({
+          type: "viral-content",
+          title: `Viral content generated for ${name.trim()}`,
+          description: `Created passport with ${data.badges.length} badges for ${cityList.length} cities (${cuisine} cuisine)`,
+          metadata: { userName: name.trim(), cities: cityList, cuisine, badgeCount: data.badges.length },
+        });
+      } else {
+        throw new Error("Invalid response format from API");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      showToast(errorMessage, "error");
+      console.error("Error generating content:", err);
+    } finally {
+      setLoading(false);
+      setShowPreview(false);
+    }
   };
 
-  const handleDownload = (): void => {
-    alert("Download feature would generate a shareable image here!");
+  const handlePreview = (): void => {
+    if (!validateForm()) return;
+    setShowPreview(true);
   };
 
-  const handleShare = (platform: string): void => {
-    alert(`Share to ${platform} functionality would open here!`);
+  const handleDownload = async (): Promise<void> => {
+    if (!passportRef.current) {
+      showToast("Passport card not found", "error");
+      return;
+    }
+
+    try {
+      showToast("Generating image...", "info");
+      
+      const canvas = await html2canvas(passportRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+
+      const link = document.createElement("a");
+      link.download = `food-explorer-passport-${name.replace(/\s+/g, "-").toLowerCase()}-${Date.now()}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      
+      showToast("Image downloaded successfully!", "success");
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      showToast("Failed to download image. Please try again.", "error");
+    }
   };
+
+  const handleShare = async (platform: string): Promise<void> => {
+    if (!caption) {
+      showToast("No caption to share", "error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(caption);
+      setCopied(true);
+      showToast(`Caption copied to clipboard!`, "success");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
+      showToast("Failed to copy to clipboard", "error");
+    }
+  };
+
+  const handleRegenerate = (): void => {
+    handleGenerate();
+  };
+
+  const cityCount = cities.split(",").map((c) => c.trim()).filter((c) => c).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+      {/* Toast Container */}
+      <div className="fixed bottom-4 right-4 z-50 space-y-2">
+        {toasts.map((toast) => (
+          <Toast key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
+        ))}
+      </div>
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <PreviewModal
+          name={name.trim()}
+          cities={cities.split(",").map((c) => c.trim()).filter((c) => c)}
+          cuisine={cuisine}
+          onConfirm={handleGenerate}
+          onCancel={() => setShowPreview(false)}
+        />
+      )}
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -147,36 +342,39 @@ export default function ViralContentPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Your Name
+                Your Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200"
+                disabled={loading}
+                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Cities Visited (comma-separated)
+                Cities Visited (comma-separated) <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 value={cities}
                 onChange={(e) => setCities(e.target.value)}
                 placeholder="e.g., Austin, TX, Portland, OR, Seattle, WA"
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200"
+                disabled={loading}
+                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Favorite Cuisine
+                Favorite Cuisine <span className="text-red-500">*</span>
               </label>
               <select
                 value={cuisine}
-                onChange={(e) => setCuisine(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200"
+                onChange={(e) => setCuisine(e.target.value as CuisineType)}
+                disabled={loading}
+                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {cuisines.map((c) => (
                   <option key={c} value={c} className="bg-white">
@@ -185,14 +383,33 @@ export default function ViralContentPage() {
                 ))}
               </select>
             </div>
-            <button
-              onClick={handleGenerate}
-              disabled={loading || !name.trim()}
-              className="w-full px-6 py-3 bg-gradient-to-r from-[#00D4FF] to-blue-600 hover:from-[#00D4FF]/90 hover:to-blue-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
-            >
-              <Sparkles className="w-5 h-5" />
-              {loading ? "Generating..." : "Generate Content"}
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={handlePreview}
+                disabled={loading || !name.trim() || cityCount === 0}
+                className="flex-1 px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-900 font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+              >
+                <Eye className="w-5 h-5" />
+                Preview
+              </button>
+              <button
+                onClick={handleGenerate}
+                disabled={loading || !name.trim() || cityCount === 0}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-[#00D4FF] to-blue-600 hover:from-[#00D4FF]/90 hover:to-blue-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    <span>Generate Content</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -201,6 +418,7 @@ export default function ViralContentPage() {
           <div className="flex flex-col items-center justify-center py-12 sm:py-20">
             <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#00D4FF] border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-slate-700 text-sm sm:text-base">Creating your Food Explorer Passport...</p>
+            <p className="text-slate-500 text-xs sm:text-sm mt-2">AI is crafting unique badges and a viral caption...</p>
           </div>
         )}
 
@@ -208,7 +426,10 @@ export default function ViralContentPage() {
         {generated && !loading && (
           <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Food Explorer Passport Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#FF6B35] via-pink-500 to-[#00D4FF] rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border-4 border-white/20">
+            <div
+              ref={passportRef}
+              className="relative overflow-hidden bg-gradient-to-br from-[#FF6B35] via-pink-500 to-[#00D4FF] rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border-4 border-white/20"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
               <div className="relative z-10">
                 <div className="text-center mb-4 sm:mb-6">
@@ -219,7 +440,7 @@ export default function ViralContentPage() {
                     {name}
                   </h2>
                   <div className="text-lg sm:text-xl text-white/90">
-                    {cities.split(",").filter(c => c.trim()).length} Cities Explored
+                    {cityCount} Cities Explored
                   </div>
                 </div>
 
@@ -243,20 +464,39 @@ export default function ViralContentPage() {
 
             {/* AI-Generated Caption */}
             <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
-                AI-Generated Social Media Caption
-              </h3>
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+                  AI-Generated Social Media Caption
+                </h3>
+                <button
+                  onClick={handleRegenerate}
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors duration-200"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Regenerate
+                </button>
+              </div>
               <div className="bg-amber-50 rounded-lg p-3 sm:p-4 border border-amber-200">
                 <p className="text-slate-700 text-sm sm:text-base whitespace-pre-line leading-relaxed">
                   {caption}
                 </p>
               </div>
               <button
-                onClick={() => navigator.clipboard.writeText(caption)}
-                className="mt-3 sm:mt-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+                onClick={() => handleShare("clipboard")}
+                className="mt-3 sm:mt-4 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition-colors duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg flex items-center gap-2"
               >
-                Copy Caption
+                {copied ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-4 h-4" />
+                    <span>Copy Caption</span>
+                  </>
+                )}
               </button>
             </div>
 

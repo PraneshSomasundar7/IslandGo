@@ -15,6 +15,7 @@ const navLinks: NavLink[] = [
   { href: "/creator-recruitment", label: "Creator Recruitment" },
   { href: "/content-gaps", label: "Content Gaps" },
   { href: "/viral-content", label: "Viral Content" },
+  { href: "/analytics", label: "Analytics" },
 ];
 
 export default function Navigation() {

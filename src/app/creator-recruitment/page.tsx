@@ -1,72 +1,106 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Users, Instagram, TrendingUp, Loader2 } from "lucide-react";
+import { ArrowLeft, Users, Instagram, TrendingUp, Loader2, AlertCircle, RefreshCw, X, CheckCircle2 } from "lucide-react";
+import { addActivity } from "@/lib/activity";
 
 interface Creator {
-  id: number;
+  id?: number;
   name: string;
   handle: string;
+  instagramHandle?: string;
   followers: string;
   engagementRate: string;
-  fitDescription: string;
+  fitDescription?: string;
+  fitReason?: string;
   initial: string;
 }
 
-const mockCreators: Creator[] = [
-  {
-    id: 1,
-    name: "Sarah Martinez",
-    handle: "@sarahfoodie",
-    followers: "12.4K",
-    engagementRate: "8.2%",
-    fitDescription: "High engagement with local food content. Posts 3x weekly about Austin restaurants. Audience matches target demographics (25-35, food enthusiasts).",
-    initial: "SM"
-  },
-  {
-    id: 2,
-    name: "James Chen",
-    handle: "@james_eats_atx",
-    followers: "18.7K",
-    engagementRate: "7.5%",
-    fitDescription: "Strong local following in Austin. Specializes in hidden gem discoveries. High comment-to-like ratio indicates engaged community.",
-    initial: "JC"
-  },
-  {
-    id: 3,
-    name: "Maya Patel",
-    handle: "@mayasfoodjourney",
-    followers: "9.8K",
-    engagementRate: "9.1%",
-    fitDescription: "Excellent engagement rate. Focuses on diverse cuisines in Austin. Active collaboration history with food brands.",
-    initial: "MP"
-  },
-  {
-    id: 4,
-    name: "David Rodriguez",
-    handle: "@davidfoodadventures",
-    followers: "15.2K",
-    engagementRate: "6.8%",
-    fitDescription: "Consistent content creator with strong local presence. Regular posts about new restaurant openings. Good brand fit.",
-    initial: "DR"
-  },
-  {
-    id: 5,
-    name: "Emma Thompson",
-    handle: "@emmaeatsaustin",
-    followers: "21.3K",
-    engagementRate: "8.9%",
-    fitDescription: "Top-tier engagement and follower count. Known for authentic reviews. Previous successful partnerships with food platforms.",
-    initial: "ET"
-  }
+interface ApiResponse {
+  creators?: Creator[];
+  error?: string;
+  message?: string;
+}
+
+interface Toast {
+  id: string;
+  message: string;
+  type: "success" | "error";
+}
+
+const loadingMessages = [
+  "Analyzing Instagram profiles...",
+  "Evaluating engagement metrics...",
+  "Matching creators to IslandGo...",
+  "Scanning local food content...",
+  "Calculating fit scores...",
 ];
+
+// Simple Toast Component
+function Toast({ toast, onClose }: { toast: Toast; onClose: () => void }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div
+      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border backdrop-blur-md animate-in slide-in-from-bottom-4 ${
+        toast.type === "success"
+          ? "bg-green-50 border-green-200 text-green-800"
+          : "bg-red-50 border-red-200 text-red-800"
+      }`}
+    >
+      {toast.type === "success" ? (
+        <CheckCircle2 className="w-5 h-5 text-green-600" />
+      ) : (
+        <AlertCircle className="w-5 h-5 text-red-600" />
+      )}
+      <p className="text-sm font-medium">{toast.message}</p>
+      <button
+        onClick={onClose}
+        className="ml-2 text-slate-500 hover:text-slate-700"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
 
 export default function CreatorRecruitmentPage() {
   const [city, setCity] = useState("");
   const [loading, setLoading] = useState(false);
   const [creators, setCreators] = useState<Creator[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState(loadingMessages[0]);
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  // Rotate loading messages every 2 seconds
+  useEffect(() => {
+    if (!loading) return;
+
+    let messageIndex = 0;
+    const interval = setInterval(() => {
+      messageIndex = (messageIndex + 1) % loadingMessages.length;
+      setLoadingMessage(loadingMessages[messageIndex]);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    const id = Math.random().toString(36).substring(7);
+    setToasts((prev) => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
 
   const handleSearch = async (): Promise<void> => {
     if (!city.trim()) return;
@@ -74,22 +108,93 @@ export default function CreatorRecruitmentPage() {
     setLoading(true);
     setHasSearched(false);
     setCreators([]);
+    setError(null);
+    setLoadingMessage(loadingMessages[0]);
 
-    // Simulate API call with 2 second delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "recruit-creators",
+          data: { city: city.trim() },
+        }),
+      });
 
-    setCreators(mockCreators);
-    setLoading(false);
-    setHasSearched(true);
+      if (!response.ok) {
+        const errorData: ApiResponse = await response.json();
+        throw new Error(errorData.error || errorData.message || "Failed to fetch creators");
+      }
+
+      const data: ApiResponse = await response.json();
+
+      if (data.creators && Array.isArray(data.creators)) {
+        // Map API response to our Creator interface
+        const mappedCreators: Creator[] = data.creators.map((creator, index) => ({
+          id: index + 1,
+          name: creator.name,
+          handle: creator.instagramHandle || creator.handle || "@unknown",
+          followers: creator.followers,
+          engagementRate: creator.engagementRate,
+          fitDescription: creator.fitReason || creator.fitDescription || "Food content creator",
+          initial: creator.initial || (creator.name ? creator.name.split(" ").map((n: string) => n[0]).join("").toUpperCase() : "XX"),
+        }));
+
+        setCreators(mappedCreators);
+        setHasSearched(true);
+        showToast(`Found ${mappedCreators.length} creators in ${city}!`, "success");
+        
+        // Log activity
+        addActivity({
+          type: "creator-recruitment",
+          title: `Found ${mappedCreators.length} creators in ${city}`,
+          description: `AI identified ${mappedCreators.length} food content creators ready for recruitment`,
+          metadata: { city, count: mappedCreators.length },
+        });
+      } else {
+        throw new Error("Invalid response format from API");
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(errorMessage);
+      setHasSearched(true);
+      showToast(errorMessage, "error");
+      console.error("Error fetching creators:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = (): void => {
+    handleSearch();
   };
 
   const handleRecruit = (creatorId: number): void => {
+    const creator = creators.find((c) => c.id === creatorId);
+    if (creator) {
+      // Log activity
+      addActivity({
+        type: "creator-recruitment",
+        title: `Recruited ${creator.name}`,
+        description: `Recruitment initiated for ${creator.handle} in ${city}`,
+        metadata: { creatorId, creatorName: creator.name, city },
+      });
+    }
     // In a real app, this would trigger a recruitment workflow
     alert(`Recruitment initiated for creator ${creatorId}`);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+      {/* Toast Container */}
+      <div className="fixed bottom-4 right-4 z-50 space-y-2">
+        {toasts.map((toast) => (
+          <Toast key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
+        ))}
+      </div>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -138,9 +243,10 @@ export default function CreatorRecruitmentPage() {
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              onKeyDown={(e) => e.key === "Enter" && !loading && city.trim() && handleSearch()}
               placeholder="Enter city name (e.g., Austin, TX)"
-              className="flex-1 px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] transition-all duration-200"
+              disabled={loading}
+              className="flex-1 px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <button
               onClick={handleSearch}
@@ -163,19 +269,39 @@ export default function CreatorRecruitmentPage() {
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 sm:py-20">
             <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-[#FF6B35] animate-spin mb-4" />
-            <p className="text-slate-700 text-sm sm:text-base">Analyzing creators in {city}...</p>
+            <p className="text-slate-700 text-sm sm:text-base">{loadingMessage}</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
+            <div className="flex items-start gap-4">
+              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-red-900 mb-2">Error Loading Creators</h3>
+                <p className="text-sm text-red-700 mb-4">{error}</p>
+                <button
+                  onClick={handleRetry}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Retry
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Creators List */}
-        {!loading && hasSearched && creators.length > 0 && (
+        {!loading && !error && hasSearched && creators.length > 0 && (
           <div className="space-y-4 sm:space-y-6">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4">
               Found {creators.length} Creators in {city}
             </h2>
             {creators.map((creator) => (
               <div
-                key={creator.id}
+                key={creator.id || creator.name}
                 className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#FF6B35] hover:shadow-md transition-all duration-300"
               >
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
@@ -214,13 +340,13 @@ export default function CreatorRecruitmentPage() {
                     <div className="bg-amber-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border border-amber-200">
                       <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                         <span className="font-semibold text-[#FF6B35]">AI Analysis: </span>
-                        {creator.fitDescription}
+                        {creator.fitDescription || creator.fitReason}
                       </p>
                     </div>
 
                     {/* Recruit Button */}
                     <button
-                      onClick={() => handleRecruit(creator.id)}
+                      onClick={() => handleRecruit(creator.id || 0)}
                       className="px-5 sm:px-6 py-2 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
                     >
                       Recruit
@@ -233,15 +359,22 @@ export default function CreatorRecruitmentPage() {
         )}
 
         {/* Empty State */}
-        {!loading && hasSearched && creators.length === 0 && (
+        {!loading && !error && hasSearched && creators.length === 0 && (
           <div className="text-center py-12 sm:py-20">
             <Users className="w-12 h-12 sm:w-16 sm:h-16 text-slate-400 mx-auto mb-4" />
-            <p className="text-slate-700 text-sm sm:text-base">No creators found for {city}</p>
+            <p className="text-slate-700 text-sm sm:text-base mb-4">No creators found for {city}</p>
+            <button
+              onClick={handleRetry}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg transition-all duration-200"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Try Again
+            </button>
           </div>
         )}
 
         {/* Initial State */}
-        {!loading && !hasSearched && (
+        {!loading && !hasSearched && !error && (
           <div className="text-center py-12 sm:py-20">
             <Users className="w-12 h-12 sm:w-16 sm:h-16 text-slate-400 mx-auto mb-4" />
             <p className="text-slate-700 text-sm sm:text-base">Enter a city name to find creators</p>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Users, MapPin, Sparkles } from "lucide-react";
+import RecentActivity from "@/components/RecentActivity";
 
 export default function Home() {
   return (
@@ -92,7 +93,7 @@ export default function Home() {
         </div>
 
         {/* Bottom Stats Section */}
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto mb-8 sm:mb-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
             <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 text-center hover:bg-white hover:border-amber-300 hover:shadow-md transition-all duration-300">
               <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-1 sm:mb-2">125K</div>
@@ -111,6 +112,11 @@ export default function Home() {
               <div className="text-slate-700 text-xs sm:text-sm md:text-base">Profit</div>
             </div>
           </div>
+        </div>
+
+        {/* Recent Activity Feed */}
+        <div className="max-w-5xl mx-auto">
+          <RecentActivity />
         </div>
       </div>
     </div>
