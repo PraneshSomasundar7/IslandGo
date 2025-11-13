@@ -49,20 +49,51 @@ const anthropic = new Anthropic({
 // Helper function to extract JSON from Claude's response
 function extractJSON(text: string): any {
   try {
-    // Try to find JSON in code blocks
-    const jsonMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[1]);
+    // First, try to find JSON array in code blocks
+    const jsonArrayMatch = text.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/);
+    if (jsonArrayMatch) {
+      return JSON.parse(jsonArrayMatch[1]);
     }
-    // Try to find JSON directly
-    const directMatch = text.match(/\{[\s\S]*\}/);
-    if (directMatch) {
-      return JSON.parse(directMatch[0]);
+    
+    // Try to find JSON object in code blocks
+    const jsonObjectMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+    if (jsonObjectMatch) {
+      return JSON.parse(jsonObjectMatch[1]);
     }
-    // If no JSON found, try parsing the whole text
-    return JSON.parse(text);
+    
+    // Try to find JSON array directly (most common for creators)
+    const arrayMatch = text.match(/\[[\s\S]*?\]/);
+    if (arrayMatch) {
+      try {
+        return JSON.parse(arrayMatch[0]);
+      } catch (e) {
+        // If that fails, try to find a complete array
+        const completeArrayMatch = text.match(/\[[\s\S]*\]/);
+        if (completeArrayMatch) {
+          return JSON.parse(completeArrayMatch[0]);
+        }
+      }
+    }
+    
+    // Try to find JSON object directly
+    const objectMatch = text.match(/\{[\s\S]*?\}/);
+    if (objectMatch) {
+      try {
+        return JSON.parse(objectMatch[0]);
+      } catch (e) {
+        // If that fails, try to find a complete object
+        const completeObjectMatch = text.match(/\{[\s\S]*\}/);
+        if (completeObjectMatch) {
+          return JSON.parse(completeObjectMatch[0]);
+        }
+      }
+    }
+    
+    // Last resort: try parsing the whole text
+    return JSON.parse(text.trim());
   } catch (error) {
     console.error("Error parsing JSON:", error);
+    console.error("Response text:", text.substring(0, 500)); // Log first 500 chars for debugging
     throw new Error("Failed to parse AI response as JSON");
   }
 }
