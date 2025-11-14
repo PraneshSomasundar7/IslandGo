@@ -12,9 +12,13 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/creator-recruitment", label: "Creator Recruitment" },
-  { href: "/content-gaps", label: "Content Gaps" },
-  { href: "/viral-content", label: "Viral Content" },
+  { href: "/campaigns", label: "Campaigns" },
+  { href: "/budget", label: "Budget" },
+  { href: "/engagement", label: "Engagement" },
+  { href: "/alerts", label: "Alerts" },
+  { href: "/creator-recruitment", label: "Creators" },
+  { href: "/content-gaps", label: "Gaps" },
+  { href: "/viral-content", label: "Viral" },
   { href: "/analytics", label: "Analytics" },
 ];
 
