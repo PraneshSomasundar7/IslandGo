@@ -15,10 +15,12 @@ const navLinks: NavLink[] = [
   { href: "/campaigns", label: "Campaigns" },
   { href: "/budget", label: "Budget" },
   { href: "/engagement", label: "Engagement" },
+  { href: "/conversions", label: "Funnel" },
+  { href: "/social-media", label: "Social" },
+  { href: "/content-calendar", label: "Calendar" },
+  { href: "/competitors", label: "Competitors" },
+  { href: "/reports", label: "Reports" },
   { href: "/alerts", label: "Alerts" },
-  { href: "/creator-recruitment", label: "Creators" },
-  { href: "/content-gaps", label: "Gaps" },
-  { href: "/viral-content", label: "Viral" },
   { href: "/analytics", label: "Analytics" },
 ];
 
