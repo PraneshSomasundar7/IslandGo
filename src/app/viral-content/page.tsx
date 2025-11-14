@@ -88,12 +88,12 @@ function PreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-amber-200">
+      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-orange-200">
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="w-5 h-5 text-[#00D4FF]" />
+          <Eye className="w-5 h-5 text-orange-600" />
           <h3 className="text-xl font-bold text-slate-900">Preview Your Passport</h3>
         </div>
-        <div className="bg-gradient-to-br from-[#FF6B35] via-pink-500 to-[#00D4FF] rounded-lg p-4 mb-4 text-white">
+        <div className="bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 rounded-lg p-4 mb-4 text-white">
           <div className="text-center">
             <div className="text-xs font-semibold mb-2">🎫 FOOD EXPLORER PASSPORT</div>
             <div className="text-2xl font-bold mb-1">{name}</div>
@@ -109,7 +109,7 @@ function PreviewModal({
         <div className="flex gap-3">
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2 bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-white font-semibold rounded-lg transition-all duration-200"
+            className="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-600/90 text-white font-semibold rounded-lg transition-all duration-200"
           >
             Generate
           </button>
@@ -276,7 +276,7 @@ export default function ViralContentPage() {
   const cityCount = cities.split(",").map((c) => c.trim()).filter((c) => c).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFE5D4' }}>
       {/* Toast Container */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2">
         {toasts.map((toast) => (
@@ -306,30 +306,30 @@ export default function ViralContentPage() {
             <span className="text-sm sm:text-base">Back to Home</span>
           </Link>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
-            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-[#00D4FF]" />
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
             <span>Viral Marketing Loops</span>
           </h1>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#00D4FF] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">CAC Reduction</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">60%</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#00D4FF] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+              <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Share Rate</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">40%</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#00D4FF] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Viral Coefficient</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">1.4x</div>
@@ -337,7 +337,7 @@ export default function ViralContentPage() {
         </div>
 
         {/* Input Form */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4 sm:mb-6">Generate Your Food Explorer Passport</h2>
           <div className="space-y-4">
             <div>
@@ -350,7 +350,7 @@ export default function ViralContentPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
                 disabled={loading}
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-orange-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -363,7 +363,7 @@ export default function ViralContentPage() {
                 onChange={(e) => setCities(e.target.value)}
                 placeholder="e.g., Austin, TX, Portland, OR, Seattle, WA"
                 disabled={loading}
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-orange-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <div>
@@ -374,7 +374,7 @@ export default function ViralContentPage() {
                 value={cuisine}
                 onChange={(e) => setCuisine(e.target.value as CuisineType)}
                 disabled={loading}
-                className="w-full px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-[#00D4FF] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 bg-white border border-orange-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/50 focus:border-orange-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {cuisines.map((c) => (
                   <option key={c} value={c} className="bg-white">
@@ -416,7 +416,7 @@ export default function ViralContentPage() {
         {/* Loading State */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-12 sm:py-20">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-[#00D4FF] border-t-transparent rounded-full animate-spin mb-4" />
+            <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-slate-700 text-sm sm:text-base">Creating your Food Explorer Passport...</p>
             <p className="text-slate-500 text-xs sm:text-sm mt-2">AI is crafting unique badges and a viral caption...</p>
           </div>
@@ -463,10 +463,10 @@ export default function ViralContentPage() {
             </div>
 
             {/* AI-Generated Caption */}
-            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+            <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
                   AI-Generated Social Media Caption
                 </h3>
                 <button
@@ -477,7 +477,7 @@ export default function ViralContentPage() {
                   Regenerate
                 </button>
               </div>
-              <div className="bg-amber-50 rounded-lg p-3 sm:p-4 border border-amber-200">
+              <div className="bg-orange-50 rounded-lg p-3 sm:p-4 border border-orange-200">
                 <p className="text-slate-700 text-sm sm:text-base whitespace-pre-line leading-relaxed">
                   {caption}
                 </p>
@@ -501,9 +501,9 @@ export default function ViralContentPage() {
             </div>
 
             {/* Share Buttons */}
-            <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+            <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
               <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2">
-                <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#00D4FF]" />
+                <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
                 Share Your Passport
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">

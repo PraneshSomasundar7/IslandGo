@@ -64,7 +64,7 @@ export default function RecentActivity() {
       case "viral-content":
         return "border-[#00D4FF]/20 bg-[#00D4FF]/5";
       default:
-        return "border-amber-200 bg-amber-50";
+        return "border-orange-200 bg-amber-50";
     }
   };
 
@@ -73,7 +73,7 @@ export default function RecentActivity() {
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+    <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
           <Clock className="w-5 h-5 text-slate-600" />

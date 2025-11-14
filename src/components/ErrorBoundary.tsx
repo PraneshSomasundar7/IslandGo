@@ -38,8 +38,8 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50 flex items-center justify-center p-4">
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-8 max-w-md w-full text-center">
+        <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#FFE5D4' }}>
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-8 max-w-md w-full text-center">
             <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-slate-900 mb-2">Something went wrong</h2>
             <p className="text-slate-600 mb-6">
@@ -47,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </p>
             <button
               onClick={this.handleReset}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
             >
               <RefreshCw className="w-4 h-4" />
               Try again

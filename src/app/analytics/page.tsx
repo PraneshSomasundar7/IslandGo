@@ -361,7 +361,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFE5D4' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">
@@ -374,7 +374,7 @@ export default function AnalyticsPage() {
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
-              <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[#00D4FF]" />
+              <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
               <span>Analytics Dashboard</span>
             </h1>
             <div className="flex items-center gap-3">
@@ -383,7 +383,7 @@ export default function AnalyticsPage() {
               </div>
               <button
                 onClick={refreshData}
-                className="px-3 py-2 bg-white border border-amber-200 rounded-lg hover:bg-amber-50 transition-colors duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2"
+                className="px-3 py-2 bg-white border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors duration-200 flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span className="text-sm">Refresh</span>
@@ -393,7 +393,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Date Range Selector */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-lg font-semibold text-slate-900 mb-2">Date Range</h2>
@@ -402,10 +402,10 @@ export default function AnalyticsPage() {
                   <button
                     key={range}
                     onClick={() => setDateRange(range)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#00D4FF] focus:ring-offset-2 ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
                       dateRange === range
-                        ? "bg-[#00D4FF] text-white shadow-md"
-                        : "bg-white border border-amber-200 text-slate-700 hover:bg-amber-50"
+                        ? "bg-orange-600 text-white shadow-md"
+                        : "bg-white border border-orange-200 text-slate-700 hover:bg-orange-50"
                     }`}
                   >
                     Last {range} days
@@ -415,7 +415,7 @@ export default function AnalyticsPage() {
             </div>
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 px-4 py-2 bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4ECB71] focus:ring-offset-2"
+              className="flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-600/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
             >
               <Download className="w-4 h-4" />
               <span>Export Report</span>
@@ -432,7 +432,7 @@ export default function AnalyticsPage() {
           </div>
         }>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
               <span className="text-slate-700 text-xs sm:text-sm">Creators Recruited</span>
               <TrendIndicator trend={stats.creatorsTrend} />
@@ -440,7 +440,7 @@ export default function AnalyticsPage() {
             <div className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1">{stats.totalCreators}</div>
             <div className="text-xs text-slate-500">Cumulative count</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
               <span className="text-slate-700 text-xs sm:text-sm">Content Gaps</span>
               <TrendIndicator trend={stats.gapsTrend} />
@@ -448,7 +448,7 @@ export default function AnalyticsPage() {
             <div className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1">{stats.totalGaps}</div>
             <div className="text-xs text-slate-500">Identified</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300">
             <div className="flex items-center justify-between mb-2">
               <span className="text-slate-700 text-xs sm:text-sm">Viral Content</span>
               <TrendIndicator trend={stats.viralTrend} />
@@ -462,9 +462,9 @@ export default function AnalyticsPage() {
         {/* Charts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Line Chart - Growth Over Time */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
             <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <LineChart className="w-5 h-5 text-[#00D4FF]" />
+              <LineChart className="w-5 h-5 text-orange-600" />
               Growth Over Time
             </h3>
             <Suspense fallback={<ChartSkeleton />}>
@@ -511,7 +511,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Bar Chart - Cities Comparison */}
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
             <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-[#4ECB71]" />
               Cities Comparison
@@ -539,7 +539,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Pie Chart - Content Categories */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6">
+        <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
           <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
             <PieChart className="w-5 h-5 text-[#FF6B35]" />
             Content Categories Distribution

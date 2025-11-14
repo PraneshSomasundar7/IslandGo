@@ -31,13 +31,13 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-lg border-b border-amber-200 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-lg border-b border-orange-200 shadow-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold text-slate-900 hover:text-[#FF6B35] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded"
+            className="text-xl font-bold text-slate-900 hover:text-orange-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded"
             onClick={closeMobileMenu}
           >
             IslandGo AI
@@ -49,9 +49,9 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded ${
+                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded ${
                   pathname === link.href
-                    ? "text-[#FF6B35] border-b-2 border-[#FF6B35]"
+                    ? "text-orange-600 border-b-2 border-orange-600"
                     : "text-slate-700 hover:text-slate-900"
                 }`}
               >
@@ -63,7 +63,7 @@ export default function Navigation() {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 text-slate-700 hover:text-slate-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 rounded"
+            className="md:hidden p-2 text-slate-700 hover:text-slate-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded"
             aria-label="Toggle menu"
             type="button"
           >
@@ -77,17 +77,17 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-amber-200 animate-in slide-in-from-top duration-200">
+          <div className="md:hidden border-t border-orange-200 animate-in slide-in-from-top duration-200">
             <div className="px-2 pt-2 pb-4 space-y-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={closeMobileMenu}
-                  className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2 ${
+                  className={`block px-3 py-2 rounded-lg text-base font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
                     pathname === link.href
-                      ? "bg-[#FF6B35]/20 text-[#FF6B35]"
-                      : "text-slate-700 hover:bg-amber-50 hover:text-slate-900"
+                      ? "bg-orange-100 text-orange-600"
+                      : "text-slate-700 hover:bg-orange-50 hover:text-slate-900"
                   }`}
                 >
                   {link.label}

@@ -71,7 +71,7 @@ function ConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-amber-200">
+      <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 border border-orange-200">
         <h3 className="text-xl font-bold text-slate-900 mb-2">Launch Campaign</h3>
         <p className="text-slate-700 mb-6">
           Are you sure you want to launch a content campaign for <strong>{city}</strong>?
@@ -79,7 +79,7 @@ function ConfirmModal({
         <div className="flex gap-3">
           <button
             onClick={onConfirm}
-            className="flex-1 px-4 py-2 bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white font-semibold rounded-lg transition-all duration-200"
+            className="flex-1 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 text-white font-semibold rounded-lg transition-all duration-200"
           >
             Confirm
           </button>
@@ -98,7 +98,7 @@ function ConfirmModal({
 // Loading Skeleton Component
 function GapCardSkeleton() {
   return (
-    <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 animate-pulse">
+    <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 animate-pulse">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="h-6 bg-amber-200 rounded w-32 mb-2"></div>
@@ -132,11 +132,11 @@ function generatePosition(city: string, index: number): { x: number; y: number }
 const getPriorityColor = (priority: string) => {
   switch (priority) {
     case "High":
-      return "bg-[#FF6B35]/20 text-[#FF6B35] border-[#FF6B35]/30";
+      return "bg-orange-100 text-orange-700 border-orange-300";
     case "Medium":
       return "bg-yellow-500/20 text-yellow-600 border-yellow-500/30";
     case "Low":
-      return "bg-[#4ECB71]/20 text-[#4ECB71] border-[#4ECB71]/30";
+      return "bg-orange-50 text-orange-600 border-orange-200";
     default:
       return "bg-slate-500/20 text-slate-600 border-slate-500/30";
   }
@@ -145,11 +145,11 @@ const getPriorityColor = (priority: string) => {
 const getDotColor = (priority: string) => {
   switch (priority) {
     case "High":
-      return "bg-[#FF6B35]";
+      return "bg-orange-600";
     case "Medium":
       return "bg-yellow-500";
     case "Low":
-      return "bg-[#4ECB71]";
+      return "bg-orange-500";
     default:
       return "bg-slate-500";
   }
@@ -314,7 +314,7 @@ export default function ContentGapsPage() {
   const activeCampaigns = gaps.filter((g) => g.campaignActive).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFE5D4' }}>
       {/* Toast Container */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2">
         {toasts.map((toast) => (
@@ -343,13 +343,13 @@ export default function ContentGapsPage() {
           </Link>
           <div className="flex items-center justify-between">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
-              <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-[#4ECB71]" />
+              <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
               <span>Content Gap Intelligence</span>
             </h1>
             {!loading && gaps.length > 0 && (
               <button
                 onClick={() => exportToCSV(gaps)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-500/90 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export CSV</span>
@@ -360,23 +360,23 @@ export default function ContentGapsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#4ECB71] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ECB71]" />
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Cities Analyzed</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">{totalCities}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#4ECB71] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ECB71]" />
+              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Content Gaps</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">{totalGaps}</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#4ECB71] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ECB71]" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Campaigns Active</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">{activeCampaigns}</div>
@@ -385,7 +385,7 @@ export default function ContentGapsPage() {
 
         {/* Filters */}
         {!loading && gaps.length > 0 && (
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Search */}
               <div className="flex-1 relative">
@@ -395,7 +395,7 @@ export default function ContentGapsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by city or state..."
-                  className="w-full pl-10 pr-4 py-2 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4ECB71]/50 focus:border-[#4ECB71] transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-orange-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4ECB71]/50 focus:border-orange-500 transition-all duration-200"
                 />
               </div>
               {/* Priority Filter */}
@@ -404,7 +404,7 @@ export default function ContentGapsPage() {
                 <select
                   value={priorityFilter}
                   onChange={(e) => setPriorityFilter(e.target.value as typeof priorityFilter)}
-                  className="px-4 py-2 bg-white border border-amber-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#4ECB71]/50 focus:border-[#4ECB71] transition-all duration-200"
+                  className="px-4 py-2 bg-white border border-orange-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#4ECB71]/50 focus:border-orange-500 transition-all duration-200"
                 >
                   <option value="All">All Priorities</option>
                   <option value="High">High</option>
@@ -437,15 +437,15 @@ export default function ContentGapsPage() {
         )}
 
         {/* Visual Map Section */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2">
-            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#4ECB71]" />
+            <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
             Geographic Coverage Map
           </h2>
-          <div className="relative bg-amber-50 rounded-lg border border-amber-200 p-4 sm:p-8 min-h-[300px] sm:min-h-[400px] overflow-hidden">
+          <div className="relative bg-orange-50 rounded-lg border border-orange-200 p-4 sm:p-8 min-h-[300px] sm:min-h-[400px] overflow-hidden">
             {loading ? (
               <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-8 h-8 text-[#4ECB71] animate-spin" />
+                <Loader2 className="w-8 h-8 text-orange-600 animate-spin" />
               </div>
             ) : (
               <>
@@ -484,7 +484,7 @@ export default function ContentGapsPage() {
                       }`}
                     />
                     <div className="absolute left-1/2 top-6 sm:top-7 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
-                      <div className="bg-white text-slate-900 text-xs px-2 py-1 rounded whitespace-nowrap border border-amber-200 shadow-md">
+                      <div className="bg-white text-slate-900 text-xs px-2 py-1 rounded whitespace-nowrap border border-orange-200 shadow-md">
                         {city.city}, {city.state}
                       </div>
                     </div>
@@ -492,10 +492,10 @@ export default function ContentGapsPage() {
                 ))}
 
                 {/* Legend */}
-                <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 flex flex-col gap-2 bg-white/90 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-amber-200 shadow-md">
+                <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 flex flex-col gap-2 bg-white/90 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-orange-200 shadow-md">
                   <div className="text-xs font-semibold text-slate-900 mb-1">Priority</div>
                   <div className="flex items-center gap-2 text-xs text-slate-700">
-                    <div className="w-3 h-3 bg-[#FF6B35] rounded-full" />
+                    <div className="w-3 h-3 bg-orange-600 rounded-full" />
                     <span>High</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-700">
@@ -503,7 +503,7 @@ export default function ContentGapsPage() {
                     <span>Medium</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-slate-700">
-                    <div className="w-3 h-3 bg-[#4ECB71] rounded-full" />
+                    <div className="w-3 h-3 bg-orange-500 rounded-full" />
                     <span>Well Covered</span>
                   </div>
                 </div>
@@ -515,7 +515,7 @@ export default function ContentGapsPage() {
         {/* Underserved Regions List */}
         <div className="mb-6 sm:mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[#4ECB71]" />
+            <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
             Underserved Regions {filteredGaps.length !== gaps.length && `(${filteredGaps.length} of ${gaps.length})`}
           </h2>
 
@@ -526,7 +526,7 @@ export default function ContentGapsPage() {
               ))}
             </div>
           ) : filteredGaps.length === 0 ? (
-            <div className="text-center py-12 bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 p-8">
+            <div className="text-center py-12 bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 p-8">
               <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
               <p className="text-slate-700">No cities match your filters</p>
             </div>
@@ -536,10 +536,10 @@ export default function ContentGapsPage() {
                 <div
                   id={`city-${city.id}`}
                   key={city.id}
-                  className={`bg-white/80 backdrop-blur-lg rounded-xl border shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300 ${
+                  className={`bg-white/90 backdrop-blur-lg rounded-xl border shadow-sm p-4 sm:p-6 hover:bg-white hover:shadow-md transition-all duration-300 ${
                     selectedCity?.id === city.id
-                      ? "border-[#4ECB71] ring-2 ring-[#4ECB71]/20"
-                      : "border-amber-200 hover:border-[#4ECB71]"
+                      ? "border-orange-500 ring-2 ring-[#4ECB71]/20"
+                      : "border-orange-200 hover:border-orange-500"
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3 sm:mb-4">
@@ -572,10 +572,10 @@ export default function ContentGapsPage() {
                       <div
                         className={`h-2 sm:h-2.5 rounded-full transition-all duration-500 ${
                           city.coverage < 40
-                            ? "bg-[#FF6B35]"
+                            ? "bg-orange-600"
                             : city.coverage < 70
                             ? "bg-yellow-500"
-                            : "bg-[#4ECB71]"
+                            : "bg-orange-500"
                         }`}
                         style={{ width: `${city.coverage}%` }}
                       />
@@ -590,7 +590,7 @@ export default function ContentGapsPage() {
                       {city.missingCategories.map((category, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-amber-50 text-slate-700 text-xs rounded-md border border-amber-200"
+                          className="px-2 py-1 bg-orange-50 text-slate-700 text-xs rounded-md border border-orange-200"
                         >
                           {category}
                         </span>
@@ -605,7 +605,7 @@ export default function ContentGapsPage() {
                     className={`w-full px-4 py-2 font-semibold rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shadow-md hover:shadow-lg ${
                       city.campaignActive
                         ? "bg-green-500 text-white cursor-not-allowed"
-                        : "bg-[#4ECB71] hover:bg-[#4ECB71]/90 text-white"
+                        : "bg-orange-500 hover:bg-orange-500/90 text-white"
                     }`}
                   >
                     <TrendingUp className="w-4 h-4" />

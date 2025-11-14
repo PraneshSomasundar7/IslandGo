@@ -188,7 +188,7 @@ export default function CreatorRecruitmentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-stone-50 to-amber-50">
+    <div className="min-h-screen" style={{ backgroundColor: '#FFE5D4' }}>
       {/* Toast Container */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2">
         {toasts.map((toast) => (
@@ -207,30 +207,30 @@ export default function CreatorRecruitmentPage() {
             <span className="text-sm sm:text-base">Back to Home</span>
           </Link>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 flex items-center gap-2 sm:gap-3">
-            <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#FF6B35]" />
+            <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
             <span>Automated Creator Recruitment</span>
           </h1>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#FF6B35] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF6B35]" />
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Creators per City</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">100+</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#FF6B35] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF6B35]" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Time Reduction</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">90%</div>
           </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#FF6B35] hover:shadow-md transition-all duration-300">
+          <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF6B35]" />
+              <Instagram className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
               <span className="text-slate-700 text-xs sm:text-sm">Response Rate</span>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-slate-900">25%</div>
@@ -238,7 +238,7 @@ export default function CreatorRecruitmentPage() {
         </div>
 
         {/* Search Section */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+        <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <input
               type="text"
@@ -247,12 +247,12 @@ export default function CreatorRecruitmentPage() {
               onKeyDown={(e) => e.key === "Enter" && !loading && city.trim() && handleSearch()}
               placeholder="Enter city name (e.g., Austin, TX)"
               disabled={loading}
-              className="flex-1 px-4 py-3 bg-white border border-amber-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35]/50 focus:border-[#FF6B35] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-[#FF6B35]/50"
+              className="flex-1 px-4 py-3 bg-white border border-orange-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-[#FF6B35]/50"
             />
             <button
               onClick={handleSearch}
               disabled={loading || !city.trim()}
-              className="px-6 py-3 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 min-w-[140px] hover:scale-105 active:scale-95 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:ring-offset-2"
+              className="px-6 py-3 bg-orange-600 hover:bg-orange-600/90 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 min-w-[140px] hover:scale-105 active:scale-95 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
             >
               {loading ? (
                 <>
@@ -270,7 +270,7 @@ export default function CreatorRecruitmentPage() {
         {loading && (
           <Suspense fallback={<TableSkeleton />}>
             <div className="flex flex-col items-center justify-center py-12 sm:py-20">
-              <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-[#FF6B35] animate-spin mb-4" />
+              <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-orange-600 animate-spin mb-4" />
               <p className="text-slate-700 text-sm sm:text-base">{loadingMessage}</p>
             </div>
           </Suspense>
@@ -305,7 +305,7 @@ export default function CreatorRecruitmentPage() {
             {creators.map((creator) => (
               <div
                 key={creator.id || creator.name}
-                className="bg-white/80 backdrop-blur-lg rounded-xl border border-amber-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-[#FF6B35] hover:shadow-md transition-all duration-300"
+                className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6 hover:bg-white hover:border-orange-500 hover:shadow-md transition-all duration-300"
               >
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                   {/* Avatar */}
@@ -340,9 +340,9 @@ export default function CreatorRecruitmentPage() {
                     </div>
 
                     {/* AI Fit Description */}
-                    <div className="bg-amber-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border border-amber-200">
+                    <div className="bg-orange-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 border border-orange-200">
                       <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                        <span className="font-semibold text-[#FF6B35]">AI Analysis: </span>
+                        <span className="font-semibold text-orange-600">AI Analysis: </span>
                         {creator.fitDescription || creator.fitReason}
                       </p>
                     </div>
@@ -350,7 +350,7 @@ export default function CreatorRecruitmentPage() {
                     {/* Recruit Button */}
                     <button
                       onClick={() => handleRecruit(creator.id || 0)}
-                      className="px-5 sm:px-6 py-2 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
+                      className="px-5 sm:px-6 py-2 bg-orange-600 hover:bg-orange-600/90 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
                     >
                       Recruit
                     </button>
@@ -368,7 +368,7 @@ export default function CreatorRecruitmentPage() {
             <p className="text-slate-700 text-sm sm:text-base mb-4">No creators found for {city}</p>
             <button
               onClick={handleRetry}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF6B35] hover:bg-[#FF6B35]/90 text-white font-semibold rounded-lg transition-all duration-200"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-600/90 text-white font-semibold rounded-lg transition-all duration-200"
             >
               <RefreshCw className="w-4 h-4" />
               Try Again
