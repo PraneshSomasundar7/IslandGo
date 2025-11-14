@@ -125,62 +125,6 @@ export default function Home() {
           <RecentActivity />
         </div>
 
-        {/* Food Reels Showcase Section */}
-        <div className="max-w-6xl mx-auto mb-12 sm:mb-20">
-          <div className="text-center mb-8 sm:mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Video className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900">
-                Trending Food Reels
-              </h2>
-            </div>
-            <p className="text-base sm:text-lg text-slate-700 max-w-2xl mx-auto">
-              Watch the most engaging food content from creators across the globe
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[1, 2, 3, 4, 5, 6].map((item) => (
-              <div
-                key={item}
-                className="group relative bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm overflow-hidden hover:shadow-lg hover:border-orange-400 transition-all duration-300"
-              >
-                <div className="aspect-[9/16] bg-gradient-to-br from-orange-200 to-orange-300 flex items-center justify-center relative">
-                  <Play className="w-12 h-12 sm:w-16 sm:h-16 text-white/80 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
-                  <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
-                    <Video className="w-3 h-3 text-white" />
-                    <span className="text-xs text-white font-medium">Reel</span>
-                  </div>
-                </div>
-                <div className="p-4 sm:p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-orange-200 flex items-center justify-center">
-                      <ChefHat className="w-4 h-4 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-slate-900 text-sm">Food Creator {item}</div>
-                      <div className="text-xs text-slate-600">2 hours ago</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-700 mb-3 line-clamp-2">
-                    Amazing street food experience in downtown! 🍜
-                  </p>
-                  <div className="flex items-center gap-4 text-xs text-slate-600">
-                    <div className="flex items-center gap-1">
-                      <Heart className="w-4 h-4" />
-                      <span>{Math.floor(Math.random() * 5000) + 100}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Share2 className="w-4 h-4" />
-                      <span>{Math.floor(Math.random() * 500) + 10}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Popular Food Categories */}
         <div className="max-w-6xl mx-auto mb-12 sm:mb-20">
           <div className="text-center mb-8 sm:mb-12">
