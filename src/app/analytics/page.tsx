@@ -513,7 +513,7 @@ export default function AnalyticsPage() {
           {/* Bar Chart - Cities Comparison */}
           <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
             <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[#4ECB71]" />
+              <BarChart3 className="w-5 h-5 text-orange-600" />
               Cities Comparison
             </h3>
             <Suspense fallback={<ChartSkeleton />}>
@@ -541,7 +541,7 @@ export default function AnalyticsPage() {
         {/* Pie Chart - Content Categories */}
         <div className="bg-white/90 backdrop-blur-lg rounded-xl border border-orange-200 shadow-sm p-4 sm:p-6">
           <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-            <PieChart className="w-5 h-5 text-[#FF6B35]" />
+            <PieChart className="w-5 h-5 text-orange-600" />
             Content Categories Distribution
           </h3>
           <Suspense fallback={<ChartSkeleton />}>

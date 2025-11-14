@@ -428,7 +428,7 @@ export default function ViralContentPage() {
             {/* Food Explorer Passport Card */}
             <div
               ref={passportRef}
-              className="relative overflow-hidden bg-gradient-to-br from-[#FF6B35] via-pink-500 to-[#00D4FF] rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border-4 border-white/20"
+              className="relative overflow-hidden bg-gradient-to-br from-orange-500 via-orange-400 to-orange-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl border-4 border-white/20"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
               <div className="relative z-10">
