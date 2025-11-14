@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Eye, MousePointerClick, Target, BarChart3, Filter, Plus, Play, Pause, CheckCircle } from "lucide-react";
+import { ArrowLeft, TrendingUp, TrendingDown, DollarSign, Eye, MousePointerClick, Target, BarChart3, Filter, Plus, Play, Pause, CheckCircle, X, Loader2 } from "lucide-react";
 import {
   LineChart as RechartsLineChart,
   BarChart as RechartsBarChart,
@@ -38,6 +38,16 @@ export default function CampaignsPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [showNewCampaignModal, setShowNewCampaignModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    status: "Draft" as "Active" | "Paused" | "Completed" | "Draft",
+    budget: "",
+    start_date: "",
+    end_date: "",
+    platform: "",
+  });
 
   useEffect(() => {
     fetchCampaigns();
@@ -77,6 +87,55 @@ export default function CampaignsPage() {
   const calculateConversionRate = (campaign: Campaign) => {
     if (campaign.clicks === 0) return 0;
     return (campaign.conversions / campaign.clicks) * 100;
+  };
+
+  const handleCreateCampaign = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.budget || !formData.start_date || !formData.end_date || !formData.platform) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const response = await fetch("/api/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          status: formData.status,
+          budget: parseFloat(formData.budget),
+          spent: 0,
+          start_date: formData.start_date,
+          end_date: formData.end_date,
+          impressions: 0,
+          clicks: 0,
+          conversions: 0,
+          revenue: 0,
+          platform: formData.platform,
+        }),
+      });
+
+      if (response.ok) {
+        setShowNewCampaignModal(false);
+        setFormData({
+          name: "",
+          status: "Draft",
+          budget: "",
+          start_date: "",
+          end_date: "",
+          platform: "",
+        });
+        fetchCampaigns();
+      } else {
+        alert("Failed to create campaign. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating campaign:", error);
+      alert("Failed to create campaign. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -132,7 +191,10 @@ export default function CampaignsPage() {
               </h1>
               <p className="text-slate-700">Monitor and manage all your marketing campaigns</p>
             </div>
-            <button className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
+            <button
+              onClick={() => setShowNewCampaignModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            >
               <Plus className="w-4 h-4" />
               New Campaign
             </button>
@@ -337,6 +399,143 @@ export default function CampaignsPage() {
             </div>
           )}
         </div>
+
+        {/* New Campaign Modal */}
+        {showNewCampaignModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-orange-200">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-slate-900">Create New Campaign</h3>
+                <button
+                  onClick={() => setShowNewCampaignModal(false)}
+                  className="p-2 hover:bg-orange-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <X className="w-5 h-5 text-slate-600" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateCampaign} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Campaign Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="Enter campaign name"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Status <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      required
+                    >
+                      <option value="Draft">Draft</option>
+                      <option value="Active">Active</option>
+                      <option value="Paused">Paused</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Platform <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.platform}
+                      onChange={(e) => setFormData({ ...formData, platform: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="e.g., Instagram, TikTok"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Budget ($) <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.budget}
+                    onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="0.00"
+                    required
+                    min="0"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Start Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.start_date}
+                      onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      End Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.end_date}
+                      onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowNewCampaignModal(false)}
+                    className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Create Campaign
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

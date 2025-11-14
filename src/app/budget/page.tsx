@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { ArrowLeft, DollarSign, TrendingUp, TrendingDown, PieChart, Calendar, AlertCircle } from "lucide-react";
+import { ArrowLeft, DollarSign, TrendingUp, TrendingDown, PieChart, Calendar, AlertCircle, Plus, X, Loader2 } from "lucide-react";
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -28,6 +28,15 @@ export default function BudgetPage() {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const [showAddBudgetModal, setShowAddBudgetModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    category: "",
+    allocated: "",
+    spent: "",
+    month: new Date().toLocaleString("default", { month: "long" }),
+    year: new Date().getFullYear(),
+  });
 
   useEffect(() => {
     fetchBudgets();
@@ -65,6 +74,48 @@ export default function BudgetPage() {
 
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
+  const handleAddBudget = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.category || !formData.allocated) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const response = await fetch("/api/budgets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: formData.category,
+          allocated: parseFloat(formData.allocated),
+          spent: parseFloat(formData.spent) || 0,
+          month: formData.month,
+          year: formData.year,
+        }),
+      });
+
+      if (response.ok) {
+        setShowAddBudgetModal(false);
+        setFormData({
+          category: "",
+          allocated: "",
+          spent: "",
+          month: new Date().toLocaleString("default", { month: "long" }),
+          year: new Date().getFullYear(),
+        });
+        fetchBudgets();
+      } else {
+        alert("Failed to add budget. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding budget:", error);
+      alert("Failed to add budget. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#FFE5D4' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -77,11 +128,20 @@ export default function BudgetPage() {
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Home</span>
           </Link>
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">
-              Budget Tracking
-            </h1>
-            <p className="text-slate-700">Monitor marketing budget allocation and spending</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+                Budget Tracking
+              </h1>
+              <p className="text-slate-700">Monitor marketing budget allocation and spending</p>
+            </div>
+            <button
+              onClick={() => setShowAddBudgetModal(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add Budget
+            </button>
           </div>
         </div>
 
@@ -291,6 +351,137 @@ export default function BudgetPage() {
             </div>
           )}
         </div>
+
+        {/* Add Budget Modal */}
+        {showAddBudgetModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full border border-orange-200">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-slate-900">Add Budget</h3>
+                <button
+                  onClick={() => setShowAddBudgetModal(false)}
+                  className="p-2 hover:bg-orange-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                >
+                  <X className="w-5 h-5 text-slate-600" />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddBudget} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    Category <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="e.g., Creator Partnerships, Content Creation, Ads"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Allocated Budget ($) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={formData.allocated}
+                      onChange={(e) => setFormData({ ...formData, allocated: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="0.00"
+                      required
+                      min="0"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Spent ($)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={formData.spent}
+                      onChange={(e) => setFormData({ ...formData, spent: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      placeholder="0.00"
+                      min="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Month <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={formData.month}
+                      onChange={(e) => setFormData({ ...formData, month: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      required
+                    >
+                      {months.map((month) => (
+                        <option key={month} value={month}>
+                          {month}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Year <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={formData.year}
+                      onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                      className="w-full px-4 py-2 rounded-lg border border-orange-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      required
+                    >
+                      {[2023, 2024, 2025, 2026].map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowAddBudgetModal(false)}
+                    className="px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="px-6 py-2 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Adding...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        Add Budget
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
