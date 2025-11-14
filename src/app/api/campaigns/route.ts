@@ -17,10 +17,19 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    
+    // Validate required fields
+    if (!body.name || !body.budget || !body.start_date || !body.end_date || !body.platform) {
+      return NextResponse.json(
+        { error: "Missing required fields: name, budget, start_date, end_date, platform" },
+        { status: 400 }
+      );
+    }
+
     const campaignId = await saveCampaign({
       name: body.name,
       status: body.status || "Draft",
-      budget: body.budget,
+      budget: parseFloat(body.budget),
       spent: body.spent || 0,
       start_date: new Date(body.start_date),
       end_date: new Date(body.end_date),
@@ -30,10 +39,14 @@ export async function POST(request: NextRequest) {
       revenue: body.revenue || 0,
       platform: body.platform,
     });
-    return NextResponse.json({ id: campaignId });
+    return NextResponse.json({ id: campaignId, success: true });
   } catch (error) {
     console.error("Error saving campaign:", error);
-    return NextResponse.json({ error: "Failed to save campaign" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json(
+      { error: `Failed to save campaign: ${errorMessage}` },
+      { status: 500 }
+    );
   }
 }
 

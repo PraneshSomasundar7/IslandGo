@@ -96,6 +96,7 @@ export default function BudgetPage() {
       });
 
       if (response.ok) {
+        const result = await response.json();
         setShowAddBudgetModal(false);
         setFormData({
           category: "",
@@ -105,12 +106,15 @@ export default function BudgetPage() {
           year: new Date().getFullYear(),
         });
         fetchBudgets();
+        alert("Budget added successfully!");
       } else {
-        alert("Failed to add budget. Please try again.");
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        alert(`Failed to add budget: ${errorData.error || "Please check the console for details"}`);
       }
     } catch (error) {
       console.error("Error adding budget:", error);
-      alert("Failed to add budget. Please try again.");
+      alert(`Failed to add budget: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setSubmitting(false);
     }

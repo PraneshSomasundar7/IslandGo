@@ -767,14 +767,20 @@ export async function saveCampaign(campaign: Omit<CampaignRecord, "id" | "create
   try {
     await initializeDatabase();
     const id = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    
+    // Ensure dates are valid
+    const startDate = campaign.start_date instanceof Date ? campaign.start_date : new Date(campaign.start_date);
+    const endDate = campaign.end_date instanceof Date ? campaign.end_date : new Date(campaign.end_date);
+    
     await sql`
       INSERT INTO campaigns (id, name, status, budget, spent, start_date, end_date, impressions, clicks, conversions, revenue, platform)
-      VALUES (${id}, ${campaign.name}, ${campaign.status}, ${campaign.budget}, ${campaign.spent}, ${campaign.start_date.toISOString()}, ${campaign.end_date.toISOString()}, ${campaign.impressions}, ${campaign.clicks}, ${campaign.conversions}, ${campaign.revenue}, ${campaign.platform})
+      VALUES (${id}, ${campaign.name}, ${campaign.status}, ${campaign.budget}, ${campaign.spent}, ${startDate.toISOString()}, ${endDate.toISOString()}, ${campaign.impressions}, ${campaign.clicks}, ${campaign.conversions}, ${campaign.revenue}, ${campaign.platform})
     `;
     return id;
   } catch (error) {
     console.error("Error saving campaign:", error);
-    throw error;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to save campaign: ${errorMessage}`);
   }
 }
 
@@ -813,14 +819,21 @@ export async function saveBudget(budget: Omit<BudgetRecord, "id" | "created_at">
   try {
     await initializeDatabase();
     const id = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    
+    // Ensure numeric values are properly formatted
+    const allocated = typeof budget.allocated === 'number' ? budget.allocated : parseFloat(String(budget.allocated));
+    const spent = typeof budget.spent === 'number' ? budget.spent : parseFloat(String(budget.spent || 0));
+    const year = typeof budget.year === 'number' ? budget.year : parseInt(String(budget.year));
+    
     await sql`
       INSERT INTO budgets (id, category, allocated, spent, month, year)
-      VALUES (${id}, ${budget.category}, ${budget.allocated}, ${budget.spent}, ${budget.month}, ${budget.year})
+      VALUES (${id}, ${budget.category}, ${allocated}, ${spent}, ${budget.month}, ${year})
     `;
     return id;
   } catch (error) {
     console.error("Error saving budget:", error);
-    throw error;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to save budget: ${errorMessage}`);
   }
 }
 

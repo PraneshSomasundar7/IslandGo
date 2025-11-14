@@ -117,6 +117,7 @@ export default function CampaignsPage() {
       });
 
       if (response.ok) {
+        const result = await response.json();
         setShowNewCampaignModal(false);
         setFormData({
           name: "",
@@ -127,12 +128,15 @@ export default function CampaignsPage() {
           platform: "",
         });
         fetchCampaigns();
+        alert("Campaign created successfully!");
       } else {
-        alert("Failed to create campaign. Please try again.");
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        alert(`Failed to create campaign: ${errorData.error || "Please check the console for details"}`);
       }
     } catch (error) {
       console.error("Error creating campaign:", error);
-      alert("Failed to create campaign. Please try again.");
+      alert(`Failed to create campaign: ${error instanceof Error ? error.message : "Unknown error"}`);
     } finally {
       setSubmitting(false);
     }

@@ -18,17 +18,30 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    
+    // Validate required fields
+    if (!body.category || !body.allocated || !body.month || !body.year) {
+      return NextResponse.json(
+        { error: "Missing required fields: category, allocated, month, year" },
+        { status: 400 }
+      );
+    }
+
     const budgetId = await saveBudget({
       category: body.category,
-      allocated: body.allocated,
-      spent: body.spent || 0,
+      allocated: parseFloat(body.allocated),
+      spent: body.spent ? parseFloat(body.spent) : 0,
       month: body.month,
-      year: body.year,
+      year: parseInt(body.year),
     });
-    return NextResponse.json({ id: budgetId });
+    return NextResponse.json({ id: budgetId, success: true });
   } catch (error) {
     console.error("Error saving budget:", error);
-    return NextResponse.json({ error: "Failed to save budget" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json(
+      { error: `Failed to save budget: ${errorMessage}` },
+      { status: 500 }
+    );
   }
 }
 
